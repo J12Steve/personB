@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phuc Lam | Digital Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; color: white; overflow-x: hidden; }
+        
+        /* Glassmorphism Base */
+        .glass-node {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .liquid-bg {
+            background: radial-gradient(circle at 50% 50%, #083344 0%, #020617 100%);
+            position: fixed; inset: 0; z-index: -1;
+        }
+
+        /* --- HIỆU ỨNG HOVER NỔI & SÁNG (MAGNETIC) --- */
+        .magnetic-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(34, 211, 238, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 
+                        0 0 20px rgba(34, 211, 238, 0.15); /* Shadow sáng nhẹ */
+        }
+
+        .magnetic-item:active {
+            transform: translateY(-2px) scale(0.98);
+            transition: all 0.1s;
+        }
+
+        /* --- 3D CAROUSEL LOGIC --- */
+        #fb-modal { 
+            perspective: 1200px; 
+            z-index: 999;
+        }
+        
+        /* Lớp nền click để đóng - Đảm bảo luôn nhận tương tác */
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: -1;
+        }
+
+        .carousel-scene {
+            width: 320px;
+            height: 140px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .account-card {
+            position: absolute;
+            width: 100%; height: 100%;
+            backface-visibility: hidden;
+            display: flex; align-items: center;
+            padding: 1.5rem; border-radius: 2.2rem;
+            cursor: pointer;
+        }
+
+        /* Hiệu ứng hít lên của card trong 3D */
+        .account-card:hover {
+            border-color: rgba(34, 211, 238, 0.5);
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.2);
+        }
+
+        .card-main { --card-rotate: 0deg; transform: rotateY(0deg) translateZ(160px); }
+        .card-second { --card-rotate: 180deg; transform: rotateY(180deg) translateZ(160px); }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        .nav-btn:hover { background: rgba(255, 255, 255, 0.1); transform: scale(1.1); }
+        .nav-btn:active { transform: scale(0.9); }
+
+        .status-dot {
+            width: 8px; height: 8px; background: #22d3ee; border-radius: 50%;
+            box-shadow: 0 0 12px #22d3ee; animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
+    </style>
+</head>
+<body class="min-h-screen p-6 flex flex-col items-center">
+
+    <div class="liquid-bg"></div>
+
+    <div id="copy-toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass-node px-6 py-3 rounded-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-500 z-[1000]">
+        <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-[10px] text-white font-bold">✓</div>
+        <span class="text-xs font-bold tracking-wide">Sao chép thành công!</span>
+    </div>
+
+    <div id="fb-modal" class="fixed inset-0 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
+        <div class="modal-overlay" onclick="closeFB()"></div>
+        
+        <div class="flex items-center gap-6 w-full max-w-[500px] justify-center relative">
+            <button onclick="rotate(1)" class="nav-btn">❮</button>
+            
+            <div class="carousel-scene" id="carousel">
+                <div class="account-card card-main glass-node border-cyan-500/40" onclick="window.open('https://www.facebook.com/youngztupi', '_blank')">
+                    <img src="image/avatar-fbmain.jpg" class="w-16 h-16 rounded-2xl object-cover border-2 border-cyan-500/30 mr-4 shadow-lg">
+                    <div>
+                        <span class="text-[9px] font-black uppercase tracking-[0.2em] text-cyan-400">Tài khoản chính</span>
+                        <h3 class="font-bold text-base leading-tight">Hoang Phuc Lam Tran</h3>
+                        <p class="text-[10px] text-gray-500 italic">facebook.com/youngztupi</p>
+                    </div>
+                </div>
+
+                <div class="account-card card-second glass-node border-white/10" onclick="window.open('https://www.facebook.com/phucam122', '_blank')">
+                    <img src="image/avatar-fbsecond.jpg" class="w-16 h-16 rounded-2xl object-cover border-2 border-white/10 mr-4 shadow-lg">
+                    <div>
+                        <span class="text-[9px] font-black uppercase tracking-[0.2em] text-gray-400">Tài khoản phụ</span>
+                        <h3 class="font-bold text-base leading-tight">Hoàng Phúc</h3>
+                        <p class="text-[10px] text-gray-500 italic">facebook.com/phucam122</p>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="rotate(-1)" class="nav-btn">❯</button>
+        </div>
+
+        <button onclick="closeFB()" class="mt-20 px-10 py-3 bg-white/5 border border-white/10 rounded-full text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-white/10 active:scale-90 transition-all z-10">
+            Đóng cửa sổ
+        </button>
+    </div>
+
+    <header class="w-full max-w-md mt-8 mb-12 text-center">
+        <div class="relative inline-block mb-6">
+            <div class="absolute inset-0 bg-cyan-500 blur-3xl opacity-20"></div>
+            <img src="image/avatar.jpg" class="relative w-24 h-24 rounded-[2.2rem] border border-white/10 p-1 object-cover shadow-2xl">
+            <div class="absolute -bottom-1 -right-1 bg-cyan-500 w-7 h-7 rounded-xl flex items-center justify-center border-2 border-[#020617] shadow-lg text-xs">✨</div>
+        </div>
+        <h1 class="text-3xl font-extrabold italic uppercase tracking-tighter">LAM TRAN HOANG PHUC</h1>
+        <div class="flex items-center justify-center gap-2 mt-3">
+            <div class="status-dot"></div>
+            <span class="text-[10px] font-bold tracking-[0.2em] text-cyan-400 uppercase">AVAILABLE FOR PROJECTS</span>
+        </div>
+    </header>
+
+    <main class="w-full max-w-md grid grid-cols-2 gap-4">
+        <a href="banking-page.html" class="glass-node magnetic-item col-span-2 p-6 rounded-[2.5rem] flex items-center justify-between group">
+            <div class="flex items-center gap-5">
+                <div class="w-14 h-14 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">🏦</div>
+                <div>
+                    <h3 class="font-bold text-lg">Hệ thống Ngân hàng</h3>
+                    <p class="text-xs text-gray-400">Vietcombank, HDBank, MoMo...</p>
+                </div>
+            </div>
+            <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" /></svg>
+            </div>
+        </a>
+
+        <div onclick="openFB()" class="glass-node magnetic-item p-5 rounded-[2.2rem] flex flex-col gap-4 cursor-pointer">
+            <div class="w-10 h-10 bg-blue-600/20 rounded-xl p-2 flex items-center justify-center">
+                <img src="image/icon/facebook.png" class="w-full h-full object-contain">
+            </div>
+            <div>
+                <h4 class="font-bold text-sm">Facebook</h4>
+                <p class="text-[10px] text-gray-500 leading-tight">Kết nối với mình</p>
+            </div>
+        </div>
+
+        <a href="https://www.threads.com/@youngztupi?fbclid=IwZXh0bgNhZW0CMTAAYnJpZBExQUdIcHU5Ujd5b3dRR0cwNXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR6SiubYIQw-rfKjRtT76E0USqTrJn-hTvleOz1uEK1dmdsuMP9w4bRkA0fa3g_aem_owCS-lR74Pn8tnSWbgvTag" class="glass-node magnetic-item p-5 rounded-[2.2rem] flex flex-col gap-4">
+            <div class="w-10 h-10 bg-white/10 rounded-xl p-2 flex items-center justify-center">
+                <img src="image/icon/threads.png" class="w-full h-full object-contain">
+            </div>
+            <div>
+                <h4 class="font-bold text-sm">Threads</h4>
+                <p class="text-[10px] text-gray-500 leading-tight">Blog cá nhân</p>
+            </div>
+        </a>
+
+        <a href="https://www.tiktok.com/@nof_nop?_r=1&_t=ZS-94pCeZuhQn6" class="glass-node magnetic-item p-5 rounded-[2.2rem] flex flex-col gap-4">
+            <div class="w-10 h-10 bg-pink-500/10 rounded-xl p-2 flex items-center justify-center">
+                <img src="image/icon/tiktok.png" class="w-full h-full object-contain">
+            </div>
+            <div>
+                <h4 class="font-bold text-sm">TikTok</h4>
+                <p class="text-[10px] text-gray-500 leading-tight">Sáng tạo nội dung</p>
+            </div>
+        </a>
+
+        <div onclick="copyInfo('0793992017')" class="glass-node magnetic-item p-5 rounded-[2.2rem] flex flex-col gap-4 cursor-pointer">
+            <div class="w-10 h-10 bg-green-500/10 rounded-xl p-2 flex items-center justify-center">
+                <img src="image/icon/zalo.png" class="w-full h-full object-contain">
+            </div>
+            <div>
+                <h4 class="font-bold text-sm">Zalo / Call</h4>
+                <p id="copy-text" class="text-[10px] text-gray-500 leading-tight">Chạm để sao chép</p>
+            </div>
+        </div>
+    </main>
+
+    <div class="mt-12 w-full max-w-md">
+        <div class="glass-node p-4 rounded-3xl flex justify-between items-center px-8">
+            <span class="text-[10px] font-bold tracking-widest text-gray-500 uppercase">LOCAL TIME</span>
+            <span id="digital-clock" class="font-mono text-cyan-400 font-bold tracking-wider">00:00:00</span>
+        </div>
+    </div>
+
+    <footer class="mt-20 pb-10 text-center opacity-30 uppercase tracking-[0.5em] text-[8px]">SYNCING DATA • 2026 EDITION</footer>
+
+    <script>
+        // Đồng hồ
+        function updateClock() {
+            document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString('vi-VN', { hour12: false });
+        }
+        setInterval(updateClock, 1000); updateClock();
+
+        // Carousel Logic
+        let currentRotation = 0;
+        const carousel = document.getElementById('carousel');
+        const fbModal = document.getElementById('fb-modal');
+
+        function rotate(direction) {
+            currentRotation += direction * 180;
+            carousel.style.transform = `rotateY(${currentRotation}deg)`;
+        }
+
+        function openFB() {
+            fbModal.classList.remove('opacity-0', 'pointer-events-none');
+            fbModal.classList.add('opacity-100', 'pointer-events-auto');
+        }
+
+        function closeFB() {
+            fbModal.classList.add('opacity-0', 'pointer-events-none');
+            fbModal.classList.remove('opacity-100', 'pointer-events-auto');
+            setTimeout(() => {
+                currentRotation = 0;
+                carousel.style.transform = `rotateY(0deg)`;
+            }, 300); 
+        }
+
+        // Swipe cử chỉ
+        let startX = 0;
+        fbModal.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+        fbModal.addEventListener('touchend', e => {
+            let endX = e.changedTouches[0].clientX;
+            if (startX - endX > 50) rotate(-1);
+            if (endX - startX > 50) rotate(1);
+        });
+    
+        // Copy Info
+        function copyInfo(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const toast = document.getElementById('copy-toast');
+                const p = document.getElementById('copy-text');
+                const originalText = p.innerText;
+                
+                p.innerText = "Đã sao chép!";
+                p.classList.add('text-green-400');
+                
+                toast.classList.replace('opacity-0', 'opacity-100');
+                toast.style.transform = "translate(-50%, -20px)";
+
+                setTimeout(() => {
+                    p.innerText = originalText;
+                    p.classList.remove('text-green-400');
+                    toast.classList.replace('opacity-100', 'opacity-0');
+                    toast.style.transform = "translate(-50%, 0px)";
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

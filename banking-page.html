@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking System | Phuc Lam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; color: white; }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Hiệu ứng Hover mờ nội dung */
+        .glass-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--bank-color);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .glass-card:hover .card-content {
+            filter: blur(10px);
+            opacity: 0.15;
+            transform: scale(0.9);
+        }
+
+        /* Nút quay về index */
+        .back-btn {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .back-btn:hover { border-color: #22d3ee; color: #22d3ee; transform: translateX(-3px); }
+
+        /* Nút Chuyển tiền xuất hiện khi hover */
+        .pay-button {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, 20%) scale(0.8);
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 30;
+        }
+
+        .glass-card:hover .pay-button {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .btn-dynamic {
+            background-color: var(--bank-color);
+            box-shadow: 0 0 30px var(--bank-color-alpha);
+            color: #000;
+            font-weight: 900;
+            padding: 14px 32px;
+            border-radius: 1.2rem;
+            white-space: nowrap;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        /* QR Bo tròn vừa phải */
+        .qr-wrapper {
+            width: 100px;
+            height: 100px;
+            border-radius: 1rem;
+            padding: 6px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .qr-img {
+            width: 100%; height: 100%;
+            border-radius: 0.8rem;
+            filter: invert(1) hue-rotate(145deg) brightness(1.2);
+            mix-blend-mode: screen;
+        }
+
+        .tab-item { transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05); opacity: 0.6; }
+        .active-tab { background: rgba(34, 211, 238, 0.2); border-color: rgba(34, 211, 238, 0.5); color: #22d3ee; opacity: 1; font-weight: 700; }
+
+        .liquid-gradient {
+            background: radial-gradient(circle at 50% 50%, #083344 0%, #020617 100%);
+        }
+    </style>
+</head>
+<body class="liquid-gradient min-h-screen p-6">
+
+    <nav class="max-w-md mx-auto flex items-center justify-between mb-10">
+        <a href="index.html" class="back-btn w-12 h-12 rounded-2xl flex items-center justify-center shadow-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+        </a>
+        <span class="text-[10px] font-black tracking-[0.4em] uppercase opacity-40 text-cyan-400">Payment Hub</span>
+        <div class="w-12 h-12"></div>
+    </nav>
+
+    <div class="max-w-md mx-auto">
+        
+        <div class="flex items-center gap-3 mb-12 overflow-x-auto no-scrollbar py-2">
+            <button onclick="filter('all', this)" class="tab-item active-tab px-6 py-2 rounded-full text-[10px] uppercase">Tất cả</button>
+            <button onclick="filter('vcb', this)" class="tab-item bg-white/5 px-6 py-2 rounded-full text-[10px] uppercase">Vietcombank</button>
+            <button onclick="filter('hdbank', this)" class="tab-item bg-white/5 px-6 py-2 rounded-full text-[10px] uppercase">HDBank</button>
+            <button onclick="filter('momo', this)" class="tab-item bg-white/5 px-6 py-2 rounded-full text-[10px] uppercase text-pink-400">MoMo</button>
+        </div>
+
+        <div id="bank-container" class="space-y-6">
+
+            <div class="bank-card vcb glass-card p-8 rounded-[3rem]" 
+                 style="--bank-color: #60a5fa; --bank-color-alpha: rgba(96, 165, 250, 0.4);">
+                <div class="pay-button">
+                    <a href="confirm-page.html?bank=vcb&stk=hoangphuclamtran&name=LAM TRAN HOANG PHUC" class="btn-dynamic">
+                        Chuyển tiền VCB
+                    </a>
+                </div>
+                <div class="card-content flex justify-between items-center transition-all duration-700">
+                    <div>
+                        <p class="text-[10px] font-black tracking-[0.3em] opacity-40 mb-2">VIETCOMBANK</p>
+                        <h3 class="text-xl font-bold">LAM TRAN HOANG PHUC</h3>
+                        <p class="text-gray-400 font-mono mt-1 text-lg">hoangphuclamtran</p>
+                    </div>
+                    <div class="qr-wrapper">
+                        <img src="https://img.vietqr.io/image/VCB-hoangphuclamtran-compact2.png" class="qr-img">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bank-card hdbank glass-card p-8 rounded-[3rem]" 
+                 style="--bank-color: #22d3ee; --bank-color-alpha: rgba(34, 211, 238, 0.4);">
+                <div class="pay-button">
+                    <a href="confirm-page.html?bank=hdbank&stk=9990793992017&name=LAM TRAN HOANG PHUC" class="btn-dynamic">
+                        Chuyển tiền HDBank
+                    </a>
+                </div>
+                <div class="card-content flex justify-between items-center transition-all duration-700">
+                    <div>
+                        <p class="text-[10px] font-black tracking-[0.3em] opacity-40 mb-2 text-cyan-400">HDBANK</p>
+                        <h3 class="text-xl font-bold uppercase">LAM TRAN HOANG PHUC</h3>
+                        <p class="text-gray-400 font-mono mt-1 text-lg">9990 7939 92017</p>
+                    </div>
+                    <div class="qr-wrapper">
+                        <img src="https://img.vietqr.io/image/HDBank-9990793992017-compact2.png" class="qr-img">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bank-card momo glass-card p-8 rounded-[3rem]" 
+                 style="--bank-color: #f472b6; --bank-color-alpha: rgba(244, 114, 182, 0.4);">
+                <div class="pay-button">
+                    <a href="confirm-page.html?bank=momo&stk=0793992017&name=PHUC LAM" class="btn-dynamic" style="color:#fff">
+                        Mở Ví MoMo
+                    </a>
+                </div>
+                <div class="card-content flex justify-between items-center transition-all duration-700">
+                    <div>
+                        <p class="text-[10px] font-black tracking-[0.3em] opacity-40 mb-2 text-pink-400">Ví MoMo</p>
+                        <h3 class="text-xl font-bold uppercase">PHUC LAM</h3>
+                        <p class="text-gray-400 font-mono mt-1 text-lg">0793992017</p>
+                    </div>
+                    <div class="qr-wrapper">
+                        <div class="w-full h-full flex items-center justify-center font-black text-pink-500 italic">QR</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function filter(type, btn) {
+            document.querySelectorAll('.tab-item').forEach(b => b.classList.remove('active-tab'));
+            btn.classList.add('active-tab');
+
+            const cards = document.querySelectorAll('.bank-card');
+            cards.forEach(card => {
+                if (type === 'all' || card.classList.contains(type)) {
+                    card.style.display = 'block';
+                    setTimeout(() => card.style.opacity = '1', 10);
+                } else {
+                    card.style.opacity = '0';
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
