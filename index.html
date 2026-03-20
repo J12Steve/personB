@@ -9,6 +9,7 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; color: white; overflow-x: hidden; }
         
+        /* Glassmorphism Base */
         .glass-node {
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(20px);
@@ -22,60 +23,83 @@
             position: fixed; inset: 0; z-index: -1;
         }
 
-        /* Sound Wave Effect */
-        .playing-wave { display: flex; align-items: flex-end; gap: 2px; height: 16px; }
-        .wave-bar { width: 3px; background-color: #1db954; border-radius: 10px; animation: wave-animation 1s ease-in-out infinite; }
-        .wave-bar:nth-child(2) { animation-delay: 0.2s; height: 60%; }
-        .wave-bar:nth-child(3) { animation-delay: 0.4s; height: 30%; }
-        .wave-bar:nth-child(4) { animation-delay: 0.6s; height: 80%; }
-        @keyframes wave-animation { 0%, 100% { height: 30%; } 50% { height: 100%; } }
-
+        /* --- HIỆU ỨNG HOVER NỔI & SÁNG (MAGNETIC) --- */
         .magnetic-item:hover {
             transform: translateY(-8px) scale(1.02);
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(34, 211, 238, 0.4);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(34, 211, 238, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 
+                        0 0 20px rgba(34, 211, 238, 0.15); /* Shadow sáng nhẹ */
         }
 
-        /* --- CUSTOM CURSOR ONLY (NO OUTLINE) --- */
-        @media (min-width: 1024px) {
-            html, body, a, button, .cursor-pointer { cursor: none !important; }
-            
-            #custom-cursor {
-                position: fixed; top: 0; left: 0;
-                width: 24px; height: 24px;
-                background-image: url('image/mouse/arrowhead.png');
-                background-size: contain;
-                background-repeat: no-repeat;
-                pointer-events: none; z-index: 9999;
-                transform: translate(0, 0); 
-                will-change: transform; /* Tối ưu hiệu năng di chuyển */
-            }
-
-            /* Khi hover vào các phần tử tương tác */
-            .cursor-active #custom-cursor {
-                background-image: url('image/mouse/hand-pointer.png');
-                width: 28px; height: 28px;
-            }
+        .magnetic-item:active {
+            transform: translateY(-2px) scale(0.98);
+            transition: all 0.1s;
         }
 
-        /* 3D Carousel & Modal styles giữ nguyên như cũ... */
-        #fb-modal { perspective: 1200px; z-index: 999; }
-        .modal-overlay { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(15px); z-index: -1; }
-        .carousel-scene { width: 320px; height: 140px; position: relative; transform-style: preserve-3d; transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .account-card { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; padding: 1.5rem; border-radius: 2.2rem; cursor: pointer; }
-        .card-main { transform: rotateY(0deg) translateZ(160px); }
-        .card-second { transform: rotateY(180deg) translateZ(160px); }
-        .nav-btn { background: rgba(255, 255, 255, 0.05); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; z-index: 10; }
-        .status-dot { width: 8px; height: 8px; background: #22d3ee; border-radius: 50%; box-shadow: 0 0 12px #22d3ee; animation: pulse 2s infinite; }
+        /* --- 3D CAROUSEL LOGIC --- */
+        #fb-modal { 
+            perspective: 1200px; 
+            z-index: 999;
+        }
+        
+        /* Lớp nền click để đóng - Đảm bảo luôn nhận tương tác */
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: -1;
+        }
+
+        .carousel-scene {
+            width: 320px;
+            height: 140px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .account-card {
+            position: absolute;
+            width: 100%; height: 100%;
+            backface-visibility: hidden;
+            display: flex; align-items: center;
+            padding: 1.5rem; border-radius: 2.2rem;
+            cursor: pointer;
+        }
+
+        /* Hiệu ứng hít lên của card trong 3D */
+        .account-card:hover {
+            border-color: rgba(34, 211, 238, 0.5);
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.2);
+        }
+
+        .card-main { --card-rotate: 0deg; transform: rotateY(0deg) translateZ(160px); }
+        .card-second { --card-rotate: 180deg; transform: rotateY(180deg) translateZ(160px); }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        .nav-btn:hover { background: rgba(255, 255, 255, 0.1); transform: scale(1.1); }
+        .nav-btn:active { transform: scale(0.9); }
+
+        .status-dot {
+            width: 8px; height: 8px; background: #22d3ee; border-radius: 50%;
+            box-shadow: 0 0 12px #22d3ee; animation: pulse 2s infinite;
+        }
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
     </style>
 </head>
 <body class="min-h-screen p-6 flex flex-col items-center">
 
     <div class="liquid-bg"></div>
-
-    <div id="custom-cursor"></div>
 
     <div id="copy-toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 glass-node px-6 py-3 rounded-2xl flex items-center gap-3 opacity-0 pointer-events-none transition-all duration-500 z-[1000]">
         <div class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-[10px] text-white font-bold">✓</div>
@@ -84,8 +108,10 @@
 
     <div id="fb-modal" class="fixed inset-0 flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
         <div class="modal-overlay" onclick="closeFB()"></div>
+        
         <div class="flex items-center gap-6 w-full max-w-[500px] justify-center relative">
             <button onclick="rotate(1)" class="nav-btn">❮</button>
+            
             <div class="carousel-scene" id="carousel">
                 <div class="account-card card-main glass-node border-cyan-500/40" onclick="window.open('https://www.facebook.com/youngztupi', '_blank')">
                     <img src="image/avatar-fbmain.jpg" class="w-16 h-16 rounded-2xl object-cover border-2 border-cyan-500/30 mr-4 shadow-lg">
@@ -95,6 +121,7 @@
                         <p class="text-[10px] text-gray-500 italic">facebook.com/youngztupi</p>
                     </div>
                 </div>
+
                 <div class="account-card card-second glass-node border-white/10" onclick="window.open('https://www.facebook.com/phucam122', '_blank')">
                     <img src="image/avatar-fbsecond.jpg" class="w-16 h-16 rounded-2xl object-cover border-2 border-white/10 mr-4 shadow-lg">
                     <div>
@@ -104,8 +131,10 @@
                     </div>
                 </div>
             </div>
+
             <button onclick="rotate(-1)" class="nav-btn">❯</button>
         </div>
+
         <button onclick="closeFB()" class="mt-20 px-10 py-3 bg-white/5 border border-white/10 rounded-full text-[10px] font-bold tracking-[0.3em] uppercase hover:bg-white/10 active:scale-90 transition-all z-10">
             Đóng cửa sổ
         </button>
@@ -125,19 +154,6 @@
     </header>
 
     <main class="w-full max-w-md grid grid-cols-2 gap-4">
-        <a href="spotify-page.html" class="glass-node magnetic-item col-span-2 p-5 rounded-[2.5rem] flex items-center gap-5 group">
-            <div class="w-14 h-14 bg-[#1db954]/10 rounded-2xl flex items-center justify-center text-2xl group-hover:rotate-[12deg] transition-transform duration-500">
-                <img src="/image/icon/spotify.png" alt="spotify" >
-            </div>
-            <div class="flex-1">
-                <h3 class="font-bold text-lg">My Vibes</h3>
-                <p class="text-xs text-gray-400 italic">Favorite Albums & Songs</p>
-            </div>
-            <div class="playing-wave">
-                <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-            </div>
-        </a>
-
         <a href="banking-page.html" class="glass-node magnetic-item col-span-2 p-6 rounded-[2.5rem] flex items-center justify-between group">
             <div class="flex items-center gap-5">
                 <div class="w-14 h-14 bg-cyan-500/10 rounded-2xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">🏦</div>
@@ -152,23 +168,43 @@
         </a>
 
         <div onclick="openFB()" class="glass-node magnetic-item p-5 rounded-[2.2rem] flex flex-col gap-4 cursor-pointer">
-            <div class="w-10 h-10 bg-blue-600/20 rounded-xl p-2 flex items-center justify-center"><img src="image/icon/facebook.png" class="w-full h-full object-contain"></div>
-            <div><h4 class="font-bold text-sm">Facebook</h4><p class="text-[10px] text-gray-500 leading-tight">Kết nối với mình</p></div>
+            <div class="w-10 h-10 bg-blue-600/20 rounded-xl p-2 flex items-center justify-center">
+                <img src="image/icon/facebook.png" class="w-full h-full object-contain">
+            </div>
+            <div>
+                <h4 class="font-bold text-sm">Facebook</h4>
+                <p class="text-[10px] text-gray-500 leading-tight">Kết nối với mình</p>
+            </div>
         </div>
 
-        <a href="https://www.threads.com/@youngztupi" class="glass-node magnetic-item p-5 rounded-[2.2rem] flex flex-col gap-4">
-            <div class="w-10 h-10 bg-white/10 rounded-xl p-2 flex items-center justify-center"><img src="image/icon/threads.png" class="w-full h-full object-contain"></div>
-            <div><h4 class="font-bold text-sm">Threads</h4><p class="text-[10px] text-gray-500 leading-tight">Blog cá nhân</p></div>
+        <a href="https://www.threads.com/@youngztupi?fbclid=IwZXh0bgNhZW0CMTAAYnJpZBExQUdIcHU5Ujd5b3dRR0cwNXNydGMGYXBwX2lkEDIyMjAzOTE3ODgyMDA4OTIAAR6SiubYIQw-rfKjRtT76E0USqTrJn-hTvleOz1uEK1dmdsuMP9w4bRkA0fa3g_aem_owCS-lR74Pn8tnSWbgvTag" class="glass-node magnetic-item p-5 rounded-[2.2rem] flex flex-col gap-4">
+            <div class="w-10 h-10 bg-white/10 rounded-xl p-2 flex items-center justify-center">
+                <img src="image/icon/threads.png" class="w-full h-full object-contain">
+            </div>
+            <div>
+                <h4 class="font-bold text-sm">Threads</h4>
+                <p class="text-[10px] text-gray-500 leading-tight">Blog cá nhân</p>
+            </div>
         </a>
 
-        <a href="https://www.tiktok.com/@nof_nop" class="glass-node magnetic-item p-5 rounded-[2.2rem] flex flex-col gap-4">
-            <div class="w-10 h-10 bg-pink-500/10 rounded-xl p-2 flex items-center justify-center"><img src="image/icon/tiktok.png" class="w-full h-full object-contain"></div>
-            <div><h4 class="font-bold text-sm">TikTok</h4><p class="text-[10px] text-gray-500 leading-tight">Sáng tạo nội dung</p></div>
+        <a href="https://www.tiktok.com/@nof_nop?_r=1&_t=ZS-94pCeZuhQn6" class="glass-node magnetic-item p-5 rounded-[2.2rem] flex flex-col gap-4">
+            <div class="w-10 h-10 bg-pink-500/10 rounded-xl p-2 flex items-center justify-center">
+                <img src="image/icon/tiktok.png" class="w-full h-full object-contain">
+            </div>
+            <div>
+                <h4 class="font-bold text-sm">TikTok</h4>
+                <p class="text-[10px] text-gray-500 leading-tight">Sáng tạo nội dung</p>
+            </div>
         </a>
 
         <div onclick="copyInfo('0793992017')" class="glass-node magnetic-item p-5 rounded-[2.2rem] flex flex-col gap-4 cursor-pointer">
-            <div class="w-10 h-10 bg-green-500/10 rounded-xl p-2 flex items-center justify-center"><img src="image/icon/zalo.png" class="w-full h-full object-contain"></div>
-            <div><h4 class="font-bold text-sm">Zalo / Call</h4><p id="copy-text" class="text-[10px] text-gray-500 leading-tight">Chạm để sao chép</p></div>
+            <div class="w-10 h-10 bg-green-500/10 rounded-xl p-2 flex items-center justify-center">
+                <img src="image/icon/zalo.png" class="w-full h-full object-contain">
+            </div>
+            <div>
+                <h4 class="font-bold text-sm">Zalo / Call</h4>
+                <p id="copy-text" class="text-[10px] text-gray-500 leading-tight">Chạm để sao chép</p>
+            </div>
         </div>
     </main>
 
@@ -182,41 +218,64 @@
     <footer class="mt-20 pb-10 text-center opacity-30 uppercase tracking-[0.5em] text-[8px]">SYNCING DATA • 2026 EDITION</footer>
 
     <script>
-        // Update Clock
-        function updateClock() { document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString('vi-VN', { hour12: false }); }
+        // Đồng hồ
+        function updateClock() {
+            document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString('vi-VN', { hour12: false });
+        }
         setInterval(updateClock, 1000); updateClock();
-
-        // --- GIAO DIỆN CON TRỎ MỚI (TỐI GIẢN) ---
-        const cursor = document.getElementById('custom-cursor');
-
-        window.addEventListener('mousemove', (e) => {
-            // Sử dụng transform để di chuyển mượt mà nhất có thể
-            cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-        });
-
-        document.querySelectorAll('a, button, .magnetic-item, [onclick]').forEach(el => {
-            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-active'));
-            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-active'));
-        });
 
         // Carousel Logic
         let currentRotation = 0;
         const carousel = document.getElementById('carousel');
         const fbModal = document.getElementById('fb-modal');
-        function rotate(direction) { currentRotation += direction * 180; carousel.style.transform = `rotateY(${currentRotation}deg)`; }
-        function openFB() { fbModal.classList.remove('opacity-0', 'pointer-events-none'); fbModal.classList.add('opacity-100', 'pointer-events-auto'); }
-        function closeFB() { fbModal.classList.add('opacity-0', 'pointer-events-none'); fbModal.classList.remove('opacity-100', 'pointer-events-auto'); setTimeout(() => { currentRotation = 0; carousel.style.transform = `rotateY(0deg)`; }, 300); }
 
+        function rotate(direction) {
+            currentRotation += direction * 180;
+            carousel.style.transform = `rotateY(${currentRotation}deg)`;
+        }
+
+        function openFB() {
+            fbModal.classList.remove('opacity-0', 'pointer-events-none');
+            fbModal.classList.add('opacity-100', 'pointer-events-auto');
+        }
+
+        function closeFB() {
+            fbModal.classList.add('opacity-0', 'pointer-events-none');
+            fbModal.classList.remove('opacity-100', 'pointer-events-auto');
+            setTimeout(() => {
+                currentRotation = 0;
+                carousel.style.transform = `rotateY(0deg)`;
+            }, 300); 
+        }
+
+        // Swipe cử chỉ
+        let startX = 0;
+        fbModal.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+        fbModal.addEventListener('touchend', e => {
+            let endX = e.changedTouches[0].clientX;
+            if (startX - endX > 50) rotate(-1);
+            if (endX - startX > 50) rotate(1);
+        });
+    
         // Copy Info
         function copyInfo(text) {
             navigator.clipboard.writeText(text).then(() => {
                 const toast = document.getElementById('copy-toast');
                 const p = document.getElementById('copy-text');
+                const originalText = p.innerText;
+                
                 p.innerText = "Đã sao chép!";
                 p.classList.add('text-green-400');
+                
                 toast.classList.replace('opacity-0', 'opacity-100');
                 toast.style.transform = "translate(-50%, -20px)";
-                setTimeout(() => { p.innerText = "Chạm để sao chép"; p.classList.remove('text-green-400'); toast.classList.replace('opacity-100', 'opacity-0'); toast.style.transform = "translate(-50%, 0px)"; }, 2000);
+
+                setTimeout(() => {
+                    p.innerText = originalText;
+                    p.classList.remove('text-green-400');
+                    toast.classList.replace('opacity-100', 'opacity-0');
+                    toast.style.transform = "translate(-50%, 0px)";
+                }, 2000);
             });
         }
     </script>
