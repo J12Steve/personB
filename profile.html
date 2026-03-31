@@ -1,113 +1,285 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Profile | Phuc Lam</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <style>
-        :root { --accent: #22d3ee; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #020617; color: white; overflow-x: hidden; }
-        
-        /* --- Nền Ambient --- */
-        .orb { position: fixed; width: 500px; height: 500px; border-radius: 50%; filter: blur(120px); z-index: -1; opacity: 0.1; animation: float 25s infinite alternate ease-in-out; }
-        .orb-1 { background: var(--accent); top: -10%; left: -10%; }
-        .orb-2 { background: #818cf8; bottom: -10%; right: -10%; animation-delay: -10s; }
-        @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(100px, 50px) scale(1.2); } }
-        /* --- Desktop: Horizontal Menu --- */
-        @media (min-width: 1024px) {
-            #desktop-nav { display: flex; }
-            #sidebar, #menu-toggle { display: none; }
-            #main-wrapper { padding-top: 120px; }
+      :root {
+        --accent: #22d3ee;
+      }
+
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background-color: #020617;
+        color: white;
+        overflow-x: hidden;
+      }
+
+      /* --- Nền Ambient --- */
+      .orb {
+        position: fixed;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        filter: blur(120px);
+        z-index: -1;
+        opacity: 0.1;
+        animation: float 25s infinite alternate ease-in-out;
+      }
+
+      .orb-1 {
+        background: var(--accent);
+        top: -10%;
+        left: -10%;
+      }
+
+      .orb-2 {
+        background: #818cf8;
+        bottom: -10%;
+        right: -10%;
+        animation-delay: -10s;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translate(0, 0) scale(1);
         }
 
-        /* --- Mobile: Sidebar & Animation --- */
-        @media (max-width: 1023px) {
-            #desktop-nav { display: none; }
-            #sidebar { position: fixed; inset: 0; width: 280px; transform: translateX(-100%); transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1); z-index: 200; }
-            body.menu-open #sidebar { transform: translateX(0); }
-            
-            /* Hiệu ứng bẻ lái màn hình chính */
-            body.menu-open #main-wrapper { 
-                transform: scale(0.85) translateX(280px) rotateY(-10deg); 
-                filter: blur(5px);
-                opacity: 0.3;
-                pointer-events: none;
-            }
+        100% {
+          transform: translate(100px, 50px) scale(1.2);
+        }
+      }
+
+      /* --- Desktop: Horizontal Menu --- */
+      @media (min-width: 1024px) {
+        #desktop-nav {
+          display: flex;
         }
 
-        #main-wrapper { transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); transform-origin: left center; perspective: 1500px;padding-top: 80px; }
+        #sidebar,
+        #menu-toggle {
+          display: none;
+        }
 
-        .glass-node { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        #main-wrapper {
+          padding-top: 120px;
+        }
+      }
 
-        /* --- Timeline Logic --- */
+      /* --- Mobile: Sidebar & Animation --- */
+      @media (max-width: 1023px) {
+        #desktop-nav {
+          display: none;
+        }
+
+        #sidebar {
+          position: fixed;
+          inset: 0;
+          width: 280px;
+          transform: translateX(-100%);
+          transition: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+          z-index: 200;
+        }
+
+        body.menu-open #sidebar {
+          transform: translateX(0);
+        }
+
+        /* Hiệu ứng bẻ lái màn hình chính */
+        body.menu-open #main-wrapper {
+          transform: scale(0.85) translateX(280px) rotateY(-10deg);
+          filter: blur(5px);
+          opacity: 0.3;
+          pointer-events: none;
+        }
+      }
+
+      #main-wrapper {
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        transform-origin: left center;
+        perspective: 1500px;
+        padding-top: 80px;
+      }
+
+      .glass-node {
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      /* --- Timeline Logic --- */
+      .timeline-container::before {
+        content: "";
+        position: absolute;
+        width: 2px;
+        height: 100%;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          rgba(34, 211, 238, 0.2),
+          rgba(129, 140, 248, 0.2),
+          transparent
+        );
+        left: 20px;
+      }
+
+      .dot-glow {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        z-index: 10;
+        animation: pulse-fade 3s infinite ease-in-out;
+        left: 14px;
+        top: 24px;
+      }
+
+      @media (min-width: 768px) {
         .timeline-container::before {
-            content: ''; position: absolute; width: 2px; height: 100%;
-            background: linear-gradient(to bottom, transparent, rgba(34, 211, 238, 0.2), rgba(129, 140, 248, 0.2), transparent);
-            left: 20px;
+          left: 50%;
+          transform: translateX(-50%);
         }
 
         .dot-glow {
-            position: absolute; width: 14px; height: 14px; border-radius: 50%; z-index: 10;
-            animation: pulse-fade 3s infinite ease-in-out; left: 14px; top: 24px;
+          left: 50% !important;
+          transform: translateX(-50%) scale(1);
         }
 
-        @media (min-width: 768px) {
-            .timeline-container::before { left: 50%; transform: translateX(-50%); }
-            .dot-glow { left: 50% !important; transform: translateX(-50%) scale(1); }
-            @keyframes pulse-fade {
-                0%, 100% { opacity: 0.3; transform: translateX(-50%) scale(0.8); box-shadow: 0 0 0px var(--accent); }
-                50% { opacity: 1; transform: translateX(-50%) scale(1.2); box-shadow: 0 0 15px var(--accent); }
-            }
-        }
+        @keyframes pulse-fade {
+          0%,
+          100% {
+            opacity: 0.3;
+            transform: translateX(-50%) scale(0.8);
+            box-shadow: 0 0 0px var(--accent);
+          }
 
-        .dot-a { animation-delay: 0s; }
-        .dot-b { animation-delay: 1.5s; }
-
-        /* --- Popup / Modal Style --- */
-        #popup-overlay {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            z-index: 1000; display: none;
-            align-items: center; justify-content: center; padding: 20px;
-            opacity: 0; transition: opacity 0.4s ease;
+          50% {
+            opacity: 1;
+            transform: translateX(-50%) scale(1.2);
+            box-shadow: 0 0 15px var(--accent);
+          }
         }
-        #popup-content {
-            transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            max-width: 600px; width: 100%;
-        }
-        body.popup-open { overflow: hidden; }
-        body.popup-open #popup-overlay { display: flex; opacity: 1; }
-        body.popup-open #popup-content { transform: scale(1); }
+      }
 
-        /* Cursor & Nav */
+      .dot-a {
+        animation-delay: 0s;
+      }
+
+      .dot-b {
+        animation-delay: 1.5s;
+      }
+
+      /* --- Popup / Modal Style --- */
+      #popup-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        z-index: 1000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+
+      #popup-content {
+        transform: scale(0.9);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        max-width: 600px;
+        width: 100%;
+      }
+
+      body.popup-open {
+        overflow: hidden;
+      }
+
+      body.popup-open #popup-overlay {
+        display: flex;
+        opacity: 1;
+      }
+
+      body.popup-open #popup-content {
+        transform: scale(1);
+      }
+/* --- UI Components --- */
+        .nav-link { position: relative; transition: 0.3s; }
+        .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--accent); transition: 0.3s; }
+        .nav-link:hover::after { width: 100%; }
+        
+        .playing-wave { display: flex; align-items: flex-end; gap: 2px; height: 14px; }
+        .wave-bar { width: 2px; background-color: #1db954; border-radius: 10px; animation: wave-animation 1s ease-in-out infinite; }
+        @keyframes wave-animation { 0%, 100% { height: 30%; } 50% { height: 100%; } }
+
         @media (min-width: 1024px) {
-            #desktop-nav { display: flex; top: 24px; }
-            #main-wrapper { padding-top: 140px; }
             html, body, a, button { cursor: none !important; }
-            #custom-cursor { position: fixed; top: 0; left: 0; width: 24px; height: 24px; background: url('image/mouse/arrowhead.png') no-repeat center/contain; pointer-events: none; z-index: 9999; }
+            #custom-cursor { position: fixed; top: 0; left: 0; width: 24px; height: 24px; background: url('image/mouse/arrowhead.png') no-repeat center/contain; pointer-events: none; z-index: 9999; will-change: transform; }
             .cursor-active #custom-cursor { background-image: url('image/mouse/hand-pointer.png'); width: 28px; height: 28px; }
         }
-    </style>
-</head>
-<body>
+      /* Cursor & Nav */
+      @media (min-width: 1024px) {
+        #desktop-nav {
+          display: flex;
+          top: 24px;
+        }
 
+        #main-wrapper {
+          padding-top: 140px;
+        }
+
+        html,
+        body,
+        a,
+        button {
+          cursor: none !important;
+        }
+
+        #custom-cursor {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 24px;
+          height: 24px;
+          background: url("image/mouse/arrowhead.png") no-repeat center/contain;
+          pointer-events: none;
+          z-index: 9999;
+        }
+
+        .cursor-active #custom-cursor {
+          background-image: url("image/mouse/hand-pointer.png");
+          width: 28px;
+          height: 28px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div id="custom-cursor" class="hidden lg:block"></div>
 
-    <nav id="desktop-nav" class="fixed left-1/2 -translate-x-1/2 z-[100] px-8 py-4 glass-node rounded-full hidden items-center gap-10">
+    <nav id="desktop-nav" class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] px-8 py-4 glass-node rounded-full hidden items-center gap-10">
         <div class="flex items-center gap-3 pr-6 border-r border-white/10">
             <img src="image/avatar.jpg" class="w-8 h-8 rounded-full border border-cyan-500/50">
-            <span class="text-xs font-black tracking-tighter uppercase">Phuc Lam</span>
+            <a href="/profile.html" class="text-xs font-black tracking-tighter uppercase">Phuc Lam</a>
         </div>
-        <div class="flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.2em]">
-            <a href="index.html" class="opacity-50 hover:opacity-100 transition-all">Trang chủ</a>
-            <a href="profile.html" class="text-cyan-400">Profile</a>
-            <a href="spotify-page.html" class="opacity-50 hover:opacity-100 transition-all">Âm nhạc</a>
-            <a href="banking-page.html" class="opacity-50 hover:opacity-100 transition-all">Ngân hàng</a>
+        <div class="flex items-center gap-8">
+            <a href="index.html" class="nav-link text-[10px] font-bold uppercase tracking-[0.2em]">Trang chủ</a>
+            <a href="profile.html" class="nav-link text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400">Profile</a>
+            <a href="spotify-page.html" class="nav-link text-[10px] font-bold uppercase tracking-[0.2em]">Âm nhạc</a>
+            <a href="banking-page.html" class="nav-link text-[10px] font-bold uppercase tracking-[0.2em]">Ngân hàng</a>
+            <button onclick="openFB()" class="nav-link text-[10px] font-bold uppercase tracking-[0.2em]">Facebook</button>
         </div>
     </nav>
 
@@ -131,49 +303,108 @@
     </aside>
 
     <div id="main-wrapper" class="pt-24 md:pt-0">
-        <div class="max-w-4xl mx-auto px-6 pb-32">
-            
-            <header class="text-center mb-24" data-aos="zoom-out">
-                <div class="relative inline-block mb-8">
-                    <img src="image/avatar.jpg" class="w-32 h-32 rounded-full border-4 border-cyan-400/20 p-2 glass-node object-cover">
-                    <div class="absolute -bottom-2 -right-2 bg-cyan-400 text-black px-3 py-1 rounded-lg text-[10px] font-black shadow-[0_0_15px_rgba(34,211,238,0.5)]">2026</div>
-                </div>
-                <h1 class="text-5xl md:text-6xl font-black italic tracking-tight bg-gradient-to-b from-white to-white/30 bg-clip-text text-transparent mb-4 pb-2 leading-tight">KINH NGHIỆM CỦA TÔI</h1>
-                <p class="text-cyan-400 tracking-[0.4em] text-[px] font-black uppercase">Click cards to see details</p>
-            </header>
+      <div class="max-w-4xl mx-auto px-6 pb-32">
+        <header class="text-center mb-24" data-aos="zoom-out">
+          <div class="relative inline-block mb-8">
+            <img
+              src="image/avatar.jpg"
+              class="w-32 h-32 rounded-full border-4 border-cyan-400/20 p-2 glass-node object-cover"
+            />
+            <div
+              class="absolute -bottom-2 -right-2 bg-cyan-400 text-black px-3 py-1 rounded-lg text-[10px] font-black shadow-[0_0_15px_rgba(34,211,238,0.5)]"
+            >
+              2026
+            </div>
+          </div>
+          <h1
+            class="text-5xl md:text-6xl font-black italic tracking-tight bg-gradient-to-b from-white to-white/30 bg-clip-text text-transparent mb-4 pb-2 leading-tight"
+          >
+            KINH NGHIỆM CỦA TÔI
+          </h1>
+          <p
+            class="text-cyan-400 tracking-[0.4em] text-[px] font-black uppercase"
+          >
+            Click cards to see details
+          </p>
+        </header>
 
-            <div class="timeline-container space-y-24 relative">
-                
-                <div class="flex flex-col md:flex-row items-start md:items-center w-full relative">
-                    <div class="hidden md:block md:w-1/2"></div>
-                    <div class="dot-glow dot-a bg-cyan-400" style="--accent: #22d3ee;"></div>
-                    <div class="w-full md:w-1/2 pl-12 md:pl-20">
-<div class="glass-node p-8 rounded-[2rem] hover:bg-white/[0.05] transition-all group active:scale-95 cursor-pointer" 
-     data-aos="fade-left"
-     onclick="openPopup('Song Anh Kids', '2026 - Present', '• Vận hành và giám sát khu vui chơi trẻ em, đảm bảo an toàn và trải nghiệm khách hàng\n• Thực hiện thu ngân, xử lý thanh toán và hỗ trợ khách hàng\n• Điều phối công việc trong ca, hỗ trợ và hướng dẫn nhân viên mới\n• Tham gia tuyển dụng và đào tạo nhân sự\n• Xử lý các tình huống phát sinh với khách hàng và trẻ em\n• Hỗ trợ vận hành khu dịch vụ (vệ sinh, sắp xếp, kiểm tra thiết bị)\n• Phối hợp với bộ phận khác (pha chế, phục vụ) để đảm bảo hoạt động trơn tru')">
-                            <span class="text-cyan-400 font-mono text-[10px] font-bold tracking-widest uppercase">2026 - Present</span>
-                            <h3 class="text-2xl font-black italic mt-1 group-hover:text-cyan-400 transition-colors uppercase">Song Anh Kids</h3>
-                            <p class="text-gray-400 text-sm mt-3 leading-relaxed">Management & Creative direction. Cần Thơ, VN.</p>
-                            <i class="text-cyan-400 font-mono text-[10px] font-bold tracking-widest uppercase" >Xem thêm >>></i>
-                        </div>
-                    </div>
+        <div class="timeline-container space-y-24 relative">
+          <!-- block-left -->
+          <div
+            class="flex flex-col md:flex-row items-start md:items-center w-full relative"
+          >
+            <div class="hidden md:block md:w-1/2"></div>
+            <div
+              class="dot-glow dot-a bg-cyan-400"
+              style="--accent: #22d3ee"
+            ></div>
+            <div class="w-full md:w-1/2 pl-12 md:pl-20">
+              <div
+                class="glass-node p-8 rounded-[2rem] hover:bg-white/[0.05] transition-all group active:scale-95 cursor-pointer"
+                data-aos="fade-left"
+                onclick="
+                  openPopup(
+                    'Song Anh Kids',
+                    '2026 - Present',
+                    '• Vận hành và giám sát khu vui chơi trẻ em, đảm bảo an toàn và trải nghiệm khách hàng\n• Thực hiện thu ngân, xử lý thanh toán và hỗ trợ khách hàng\n• Điều phối công việc trong ca, hỗ trợ và hướng dẫn nhân viên mới\n• Tham gia tuyển dụng và đào tạo nhân sự\n• Xử lý các tình huống phát sinh với khách hàng và trẻ em\n• Hỗ trợ vận hành khu dịch vụ (vệ sinh, sắp xếp, kiểm tra thiết bị)\n• Phối hợp với bộ phận khác (pha chế, phục vụ) để đảm bảo hoạt động trơn tru',
+                  )
+                "
+              >
+                <span
+                  class="text-cyan-400 font-mono text-[10px] font-bold tracking-widest uppercase"
+                  >2026 - Present</span
+                >
+                <h3
+                  class="text-2xl font-black italic mt-1 group-hover:text-cyan-400 transition-colors uppercase"
+                >
+                  Song Anh Kids
+                </h3>
+                <p class="text-gray-400 text-sm mt-3 leading-relaxed">
+                  Management & Creative direction. Cần Thơ, VN.
+                </p>
+                <i
+                  class="text-cyan-400 font-mono text-[10px] font-bold tracking-widest uppercase"
+                  >Xem thêm >>></i
+                >
+              </div>
+            </div>
+          </div>
+          <!-- block-right -->
+        <div class="flex flex-col md:flex-row-reverse items-start md:items-center w-full relative">
+            <div class="hidden md:block md:w-1/2"></div>
+        
+            <div class="dot-glow dot-b bg-indigo-500" style="--accent: #818cf8"></div>
+        
+            <div class="w-full md:w-1/2 pl-12 md:pl-0 md:pr-20 md:text-right">
+                <div class="glass-node p-8 rounded-[2rem] hover:bg-white/[0.05] transition-all group active:scale-95 cursor-pointer"
+                    data-aos="fade-right" onclick="
+                          openPopup(
+                            'Sinh viên Công nghệ thông tin',
+                            '2022 - 2025',
+                            '• Hoàn thành khóa học tại Trường Cao đẳng Cần Thơ.\n\n• Trong quá trình học tập đã phát triển các dự án Website & Phần mềm, sử dụng HTML, CSS, JS và Java. Định hướng Front-end, thành thạo Tailwind CSS & JavaScript. Tham gia các hoạt động ngoại khóa về công nghệ và lập trình.\n\n• Từng tham gia thực tập tại VNPT, hỗ trợ triển khai và bảo trì hệ thống mạng.\n• Thực hành cấu hình thiết bị mạng (router, switch), kiểm tra kết nối, xử lý sự cố cơ bản và tìm hiểu hạ tầng mạng doanh nghiệp.'
+                          )
+                        ">
+                    <span class="text-indigo-400 font-mono text-[10px] font-bold tracking-widest uppercase">
+                        2022 - 2025
+                    </span>
+        
+                    <h3 class="text-2xl font-black italic mt-1 group-hover:text-indigo-400 transition-colors uppercase">
+                         Tin học ứng dụng
+                    </h3>
+        
+                    <p class="text-gray-400 text-sm mt-3 leading-relaxed">
+                        Tốt nghiệp Cao đẳng. Định hướng Front-end, thành thạo Tailwind
+                        CSS & JavaScript.
+                    </p>
+                    <i
+                  class="text-cyan-400 font-mono text-[10px] font-bold tracking-widest uppercase"
+                  >Xem thêm >>></i
+                >
                 </div>
+            </div>
+        </div>
 
-                <!-- <div class="flex flex-col md:flex-row-reverse items-start md:items-center w-full relative">
-                    <div class="hidden md:block md:w-1/2"></div>
-                    <div class="dot-glow dot-b bg-indigo-500" style="--accent: #818cf8;"></div>
-                    <div class="w-full md:w-1/2 pl-12 md:pl-0 md:pr-20 md:text-right">
-                        <div class="glass-node p-8 rounded-[2rem] hover:bg-white/[0.05] transition-all group active:scale-95 cursor-pointer" 
-                             data-aos="fade-right"
-                             onclick="openPopup('Front-end Dev', '2025', 'Nghiên cứu và thực thi các dự án Web Hub cá nhân. Sử dụng Tailwind CSS, JavaScript và các thư viện animation như AOS để tạo ra trải nghiệm người dùng mượt mà trên nhiều thiết bị.')">
-                            <span class="text-indigo-400 font-mono text-[10px] font-bold tracking-widest uppercase">2025</span>
-                            <h3 class="text-2xl font-black italic mt-1 group-hover:text-indigo-400 transition-colors uppercase">Front-end Dev</h3>
-                            <p class="text-gray-400 text-sm mt-3 leading-relaxed">Tailwind CSS & JavaScript Master. UI/UX Focus.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex flex-col md:flex-row items-start md:items-center w-full relative">
+          <!--<div class="flex flex-col md:flex-row items-start md:items-center w-full relative">
                     <div class="hidden md:block md:w-1/2"></div>
                     <div class="dot-glow dot-a bg-cyan-400" style="--accent: #22d3ee;"></div>
                     <div class="w-full md:w-1/2 pl-12 md:pl-20">
@@ -186,74 +417,97 @@
                         </div>
                     </div>
                 </div> -->
-
-            </div>
         </div>
+      </div>
     </div>
 
     <div id="popup-overlay" onclick="closePopup()">
-        <div id="popup-content" class="glass-node p-10 rounded-[3rem] border-white/20 relative" onclick="event.stopPropagation()">
-            <button class="absolute top-6 right-8 opacity-40 hover:opacity-100 text-2xl transition-all" onclick="closePopup()">&times;</button>
-            <span id="pop-date" class="text-cyan-400 font-mono text-[10px] font-bold tracking-[0.3em] uppercase"></span>
-            <h2 id="pop-title" class="text-4xl font-black italic mt-2 mb-6 uppercase tracking-tighter"></h2>
-            <div class="h-px bg-white/10 mb-6"></div>
-            <p id="pop-desc" class="text-gray-300 leading-relaxed text-sm md:text-base font-medium"></p>
-        </div>
+      <div
+        id="popup-content"
+        class="glass-node p-10 rounded-[3rem] border-white/20 relative"
+        onclick="event.stopPropagation()"
+      >
+        <button
+          class="absolute top-6 right-8 opacity-40 hover:opacity-100 text-2xl transition-all"
+          onclick="closePopup()"
+        >
+          &times;
+        </button>
+        <span
+          id="pop-date"
+          class="text-cyan-400 font-mono text-[10px] font-bold tracking-[0.3em] uppercase"
+        ></span>
+        <h2
+          id="pop-title"
+          class="text-4xl font-black italic mt-2 mb-6 uppercase tracking-tighter"
+        ></h2>
+        <div class="h-px bg-white/10 mb-6"></div>
+        <p
+          id="pop-desc"
+          class="text-gray-300 leading-relaxed text-sm md:text-base font-medium"
+        ></p>
+      </div>
     </div>
 
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-    AOS.init({ duration: 1000, once: true });
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({ duration: 1000, once: true });
 
-    // --- KHAI BÁO BIẾN (Đây là phần bị thiếu) ---
-    const body = document.body;
-    const menuBtn = document.getElementById('menu-toggle');
-    const mainWrapper = document.getElementById('main-wrapper');
-    const hamIcon = document.getElementById('ham-icon');
+      // --- KHAI BÁO BIẾN (Đây là phần bị thiếu) ---
+      const body = document.body;
+      const menuBtn = document.getElementById("menu-toggle");
+      const mainWrapper = document.getElementById("main-wrapper");
+      const hamIcon = document.getElementById("ham-icon");
 
-    // Toggle Sidebar Mobile
-    menuBtn?.addEventListener('click', (e) => {
+      // Toggle Sidebar Mobile
+      menuBtn?.addEventListener("click", (e) => {
         e.stopPropagation(); // Ngăn sự kiện nổi bọt
-        body.classList.toggle('menu-open');
-        
-        const isOpen = body.classList.contains('menu-open');
+        body.classList.toggle("menu-open");
+
+        const isOpen = body.classList.contains("menu-open");
         // Thay đổi icon menu thành dấu X
-        hamIcon.innerHTML = isOpen 
-            ? '<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round"/>' 
-            : '<path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/>';
-    });
+        hamIcon.innerHTML = isOpen
+          ? '<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round"/>'
+          : '<path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/>';
+      });
 
-    // Đóng Sidebar khi chạm vào vùng màn hình chính
-    mainWrapper?.addEventListener('click', () => {
-        if(body.classList.contains('menu-open')) {
-            body.classList.remove('menu-open');
-            hamIcon.innerHTML = '<path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/>';
+      // Đóng Sidebar khi chạm vào vùng màn hình chính
+      mainWrapper?.addEventListener("click", () => {
+        if (body.classList.contains("menu-open")) {
+          body.classList.remove("menu-open");
+          hamIcon.innerHTML =
+            '<path d="M3 12h18M3 6h18M3 18h18" stroke-linecap="round"/>';
         }
-    });
+      });
 
-    // Popup Logic
-    function openPopup(title, date, desc) {
-        document.getElementById('pop-title').innerText = title;
-        document.getElementById('pop-date').innerText = date;
+      // Popup Logic
+      function openPopup(title, date, desc) {
+        document.getElementById("pop-title").innerText = title;
+        document.getElementById("pop-date").innerText = date;
         // Sử dụng innerText để giữ định dạng xuống dòng từ \n
-        document.getElementById('pop-desc').innerText = desc;
-        body.classList.add('popup-open');
-    }
+        document.getElementById("pop-desc").innerText = desc;
+        body.classList.add("popup-open");
+      }
 
-    function closePopup() {
-        body.classList.remove('popup-open');
-    }
+      function closePopup() {
+        body.classList.remove("popup-open");
+      }
 
-    // Cursor Logic
-    const cursor = document.getElementById('custom-cursor');
-    window.addEventListener('mousemove', (e) => {
-        if(cursor) cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-    });
+      // Cursor Logic
+      const cursor = document.getElementById("custom-cursor");
+      window.addEventListener("mousemove", (e) => {
+        if (cursor)
+          cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+      });
 
-    document.querySelectorAll('a, button, .glass-node').forEach(el => {
-        el.addEventListener('mouseenter', () => body.classList.add('cursor-active'));
-        el.addEventListener('mouseleave', () => body.classList.remove('cursor-active'));
-    });
-</script>
-</body>
+      document.querySelectorAll("a, button, .glass-node").forEach((el) => {
+        el.addEventListener("mouseenter", () =>
+          body.classList.add("cursor-active"),
+        );
+        el.addEventListener("mouseleave", () =>
+          body.classList.remove("cursor-active"),
+        );
+      });
+    </script>
+  </body>
 </html>
